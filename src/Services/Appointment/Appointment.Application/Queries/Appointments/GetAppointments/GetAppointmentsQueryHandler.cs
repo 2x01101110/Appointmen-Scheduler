@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Application.Data;
+using BuildingBlocks.Application.Data.Queries;
 using Dapper;
 using MediatR;
 using System;
@@ -24,14 +25,22 @@ namespace Appointment.Application.Queries.Appointments.GetAppointments
         {
             var connection = connectionFactory.GetOpenConnection();
 
-            var query = "SELECT " +
-                "[Appointments].[Id], " +
-                "[Appointments].[FirstName], " +
-                "[Appointments].[LastName], " +
-                "[Appointments].[Email], " +
-                "[Appointments].[Phone] from [Appointments]";
+            var query = Query.Create(request,
+                "SELECT " +
+                    $"[Appointments].[Id] as [{nameof(AppointmentDto.Id)}], " +
+                    $"[Appointments].[FirstName] as [{nameof(AppointmentDto.FirstName)}], " +
+                    $"[Appointments].[LastName] as [{nameof(AppointmentDto.LastName)}], " +
+                    $"[Appointments].[Email] as [{nameof(AppointmentDto.Email)}], " +
+                    $"[Appointments].[Phone] as [{nameof(AppointmentDto.Phone)}] " +
+                    //$"[Appointments].[Phone] as [{nameof(AppointmentDto.Phone)}], " +
+                    //$"[Appointments].[Status] as [{nameof(AppointmentDto.Status)}] " +
+                "FROM " +
+                    "[Appointments] " +
+                "order by " +
+                    "[Appointments].[Id] desc"
+                );
 
-            var appointments = await connection.QueryAsync<AppointmentDto>(query);
+            var appointments = await connection.QueryAsync<AppointmentDto>(query.ToString());
 
             return appointments.AsList();
         }
