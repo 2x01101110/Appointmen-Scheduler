@@ -25,7 +25,7 @@ namespace Appointment.Application.Queries.Appointments.GetAppointments
         {
             var connection = connectionFactory.GetOpenConnection();
 
-            var query = Query.Create(request,
+            var query = PagedQuery.Create(request,
                 "SELECT " +
                     $"[Appointments].[Id] as [{nameof(AppointmentDto.Id)}], " +
                     $"[Appointments].[FirstName] as [{nameof(AppointmentDto.FirstName)}], " +

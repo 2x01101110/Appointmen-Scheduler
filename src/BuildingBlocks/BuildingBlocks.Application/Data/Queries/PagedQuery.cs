@@ -1,12 +1,12 @@
 ﻿namespace BuildingBlocks.Application.Data.Queries
 {
-    public class Query
+    public class PagedQuery
     {
         public int Page { get; } = 0;
         public int PageSize { get; } = 200;
         private string Sql { get; set; }
 
-        private Query(int? page, int? pageSize, string sql)
+        private PagedQuery(int? page, int? pageSize, string sql)
         {
             if (page != null)
             { 
@@ -21,7 +21,7 @@
             this.Sql = $"{sql} OFFSET {this.Page} ROWS FETCH NEXT {this.PageSize} ROWS ONLY; ";
         }
 
-        public static Query Create(IPagedQuery pagedRequest, string sql)
+        public static PagedQuery Create(IPagedQuery pagedRequest, string sql)
         {
             int? page = null;
             int? pageSize = null;
@@ -36,7 +36,7 @@
                 pageSize = pagedRequest.PageSize.Value;
             }
 
-            return new Query(page, pageSize, sql);
+            return new PagedQuery(page, pageSize, sql);
         }
 
         public override string ToString() => this.Sql;

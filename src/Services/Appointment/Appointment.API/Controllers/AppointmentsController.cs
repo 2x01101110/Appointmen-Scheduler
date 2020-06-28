@@ -21,9 +21,9 @@ namespace Appointment.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAppointments()
+        public async Task<IActionResult> GetAppointments([FromQuery]int? page, [FromQuery]int? pageSize)
         {
-            var query = new GetAppointmentsQuery();
+            var query = new GetAppointmentsQuery(page, pageSize);
             var appointments = await mediator.Send(query);
 
             return Ok(appointments);
