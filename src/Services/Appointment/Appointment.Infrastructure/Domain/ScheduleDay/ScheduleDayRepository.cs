@@ -1,13 +1,14 @@
 ﻿using Appointment.Domain.ScheduleDay;
+using BuildingBlocks.Domain;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Appointment.Infrastructure.Domain.ScheduleDay
 {
     public class ScheduleDayRepository : IScheduleDayRepository
     {
+        public IUnitOfWork UnitOfWork => throw new NotImplementedException();
+
         public Task AddAppointmentAsync(Appointment.Domain.ScheduleDay.Appointment appointment)
         {
             throw new NotImplementedException();
