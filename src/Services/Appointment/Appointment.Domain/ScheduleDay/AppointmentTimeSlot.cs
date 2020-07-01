@@ -1,16 +1,15 @@
 ﻿using BuildingBlocks.Domain;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace Appointment.Domain.Appointments
+namespace Appointment.Domain.ScheduleDay
 {
-    public class AppointmentTime : ValueObject
+    public class AppointmentTimeSlot : ValueObject
     {
         public DateTime Start { get; }
         public DateTime End { get; }
 
-        public AppointmentTime(DateTime start, DateTime end)
+        public AppointmentTimeSlot(DateTime start, DateTime end)
         {
             this.Start = start;
             this.End = end;

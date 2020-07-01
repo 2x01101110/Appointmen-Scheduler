@@ -1,16 +1,22 @@
 ﻿using MediatR;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace BuildingBlocks.Domain
 {
     public abstract class Entity<T> : IEquatable<Entity<T>>
     {
         private List<INotification> _domainEvents;
-        public IReadOnlyCollection<INotification> domainEvents => _domainEvents?.AsReadOnly();
+        public IReadOnlyCollection<INotification> DomainEvents => _domainEvents?.AsReadOnly();
         public virtual T Id { get; protected set; }
 
+        public void CheckBusinessRule(IBusinessRule businessRule)
+        {
+            if (!businessRule.IsValid())
+            {
+                throw new Exception(businessRule.Message);
+            }
+        }
         public void AddDomainEvent(INotification domainEvent)
         {
             _domainEvents = _domainEvents ?? new List<INotification>();

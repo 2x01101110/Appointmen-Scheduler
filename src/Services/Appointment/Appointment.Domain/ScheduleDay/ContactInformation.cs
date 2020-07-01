@@ -1,7 +1,7 @@
 ﻿using BuildingBlocks.Domain;
 using System.Collections.Generic;
 
-namespace Appointment.Domain.Appointments
+namespace Appointment.Domain.ScheduleDay
 {
     public class ContactInformation : ValueObject
     {
