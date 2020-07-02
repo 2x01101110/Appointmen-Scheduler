@@ -8,18 +8,24 @@ namespace Scheduling.Domain.ScheduleDayAggregate
     {
         public AppointmentTimeSlot AppointmentTimeSlot { get; private set; }
         public AppointmentStatus AppointmentStatus { get; private set; }
+        public ContactInformation ContactInformation { get; private set; }
 
-        private Appointment(AppointmentTimeSlot appointmentTimeSlot)
+        private Appointment(AppointmentTimeSlot appointmentTimeSlot, ContactInformation contactInformation)
         {
             this.AppointmentTimeSlot = appointmentTimeSlot;
             this.AppointmentStatus = AppointmentStatus.ConfirmationPending;
+            this.ContactInformation = contactInformation;
 
             this.AddDomainEvent(new AppointmentCreatedDomainEvent());
         }
 
-        public static Appointment CreateNew(AppointmentTimeSlot appointmentTimeSlot)
+        private Appointment() {
+
+        }
+
+        public static Appointment CreateNew(AppointmentTimeSlot appointmentTimeSlot, ContactInformation contactInformation)
         {
-            return new Appointment(appointmentTimeSlot);
+            return new Appointment(appointmentTimeSlot, contactInformation);
         }
 
         public void ConfirmAppointment()

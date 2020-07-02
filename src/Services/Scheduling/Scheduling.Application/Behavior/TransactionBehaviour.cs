@@ -15,9 +15,9 @@ namespace Scheduling.Application.Behavior
             this._scheduleDayRepository = scheduleDayRepository;
         }
 
-        public Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            throw new NotImplementedException();
+            return await next();
         }
     }
 }

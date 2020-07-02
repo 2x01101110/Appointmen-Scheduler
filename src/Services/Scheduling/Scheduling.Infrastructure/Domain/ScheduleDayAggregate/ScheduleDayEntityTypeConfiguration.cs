@@ -8,7 +8,22 @@ namespace Scheduling.Infrastructure.Domain.ScheduleDayAggregate
     {
         public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<ScheduleDay> builder)
         {
-            throw new NotImplementedException();
+            builder.ToTable("Schedule");
+
+            builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.Day);
+
+            builder.Ignore(x => x.DomainEvents);
+
+            builder.HasMany(x => x.Appointments)
+                .WithOne()
+                .HasForeignKey("ScheduleDayId")
+                .OnDelete(DeleteBehavior.Cascade);
+
+            var navigation = builder.Metadata.FindNavigation(nameof(ScheduleDay.Appointments));
+
+            navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
         }
     }
 }

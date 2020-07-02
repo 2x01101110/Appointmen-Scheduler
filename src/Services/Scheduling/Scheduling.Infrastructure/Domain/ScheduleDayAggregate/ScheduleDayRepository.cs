@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Domain;
+using Microsoft.EntityFrameworkCore;
 using Scheduling.Domain.ScheduleDayAggregate;
 using System;
 using System.Threading.Tasks;
@@ -7,11 +8,17 @@ namespace Scheduling.Infrastructure.Domain.ScheduleDayAggregate
 {
     public class ScheduleDayRepository : IScheduleDayRepository
     {
-        public IUnitOfWork UnitOfWork => throw new NotImplementedException();
+        private readonly SchedulingContext _context;
+        public IUnitOfWork UnitOfWork => _context;
 
-        public Task<ScheduleDay> FindByDayAsync(DateTime day)
+        public ScheduleDayRepository(SchedulingContext context)
         {
-            throw new NotImplementedException();
+            this._context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
+        public async Task<ScheduleDay> FindByDayAsync(DateTime day)
+        {
+            return await _context.ScheduleDays.FirstOrDefaultAsync();
         }
 
         public Task<ScheduleDay> FindByIdAsync(Guid id)

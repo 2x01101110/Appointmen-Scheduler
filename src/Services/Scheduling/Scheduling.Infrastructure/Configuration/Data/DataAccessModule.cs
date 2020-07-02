@@ -2,6 +2,7 @@
 using BuildingBlocks.Application.Data;
 using BuildingBlocks.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Scheduling.Infrastructure.Configuration.Mediator;
 
 namespace Scheduling.Infrastructure.Configuration.Data
 {
@@ -33,6 +34,14 @@ namespace Scheduling.Infrastructure.Configuration.Data
                 .AsSelf()
                 .As<DbContext>()
                 .InstancePerLifetimeScope();
+
+            var infrastructureAssembly = typeof(SchedulingContext).Assembly;
+
+            builder.RegisterAssemblyTypes(infrastructureAssembly)
+                .Where(type => type.Name.EndsWith("Repository"))
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope()
+                .FindConstructorsWith(new AllConstructorFinder());
         }
     }
 }

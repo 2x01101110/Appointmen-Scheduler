@@ -1,32 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Appointment.Application.Queries.Appointments.GetAppointments;
+﻿using System.Threading.Tasks;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Scheduling.Application.Commands;
 
-namespace Appointment.API.Controllers
+namespace Scheduling.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class AppointmentsController : ControllerBase
     {
-        private readonly IMediator mediator;
+        private readonly IMediator _mediator;
 
         public AppointmentsController(IMediator mediator)
         {
-            this.mediator = mediator;
+            this._mediator = mediator;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAppointments([FromQuery]int? page, [FromQuery]int? pageSize)
         {
-            var query = new GetAppointmentsQuery(page, pageSize);
-            var appointments = await mediator.Send(query);
-
-            return Ok(appointments);
+            await _mediator.Send(new TestCommand());
+            return Ok("Command Works");
         }
     }
 }

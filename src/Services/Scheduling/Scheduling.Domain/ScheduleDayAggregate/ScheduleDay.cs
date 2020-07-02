@@ -9,7 +9,6 @@ namespace Scheduling.Domain.ScheduleDayAggregate
     {
         public DateTime Day { get; }
         public bool Available { get; private set; }
-        public ContactInformation ContactInformation { get; private set; }
 
         private readonly List<Appointment> _appointments;
         public IReadOnlyCollection<Appointment> Appointments => _appointments;
@@ -19,11 +18,11 @@ namespace Scheduling.Domain.ScheduleDayAggregate
             this._appointments = new List<Appointment>();
         }
 
-        public void CreateAppointment(AppointmentTimeSlot appointmentTimeSlot)
+        public void CreateAppointment(AppointmentTimeSlot appointmentTimeSlot, ContactInformation contactInformation)
         {
             this.CheckBusinessRule(new AppointmentTimeSlotNotTaken(this.Appointments, appointmentTimeSlot));
 
-            this._appointments.Add(Appointment.CreateNew(appointmentTimeSlot));
+            this._appointments.Add(Appointment.CreateNew(appointmentTimeSlot, contactInformation));
         }
     }
 }
