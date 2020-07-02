@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using BuildingBlocks.Infrastructure.Idempotency;
+using MediatR;
 using Scheduling.Domain.ScheduleDayAggregate;
 using System;
 using System.Collections.Generic;
@@ -17,16 +18,21 @@ namespace Scheduling.Application.Commands
             this._repository = repository;
         }
 
-        //public TestCommandHandler()
-        //{
-
-        //}
-
         public async Task<bool> Handle(TestCommand request, CancellationToken cancellationToken)
         {
             var test = await _repository.FindByDayAsync(DateTime.Now);
 
             return await Task.FromResult(true);
         }
+    }
+
+    public class TestIdentidiedCommandHandler : IdentifiedCommandHandler<TestCommand, bool>
+    {
+        public TestIdentidiedCommandHandler(IMediator mediator, IRequestManager requestManager) : base(mediator, requestManager)
+        {
+
+        }
+
+        public override bool CreateResultForDuplicateRequest() => true;
     }
 }
