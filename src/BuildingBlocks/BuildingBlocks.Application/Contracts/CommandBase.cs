@@ -6,38 +6,26 @@ namespace BuildingBlocks.Infrastructure.Contracts
 {
     public abstract class CommandBase : ICommand
     {
-        public Guid CommandId { get; private set; }
         public DateTime CommandTime { get; private set; }
         
 
         protected CommandBase()
         {
-            this.CommandId = Guid.NewGuid();
             this.CommandTime = DateTime.UtcNow;
         }
 
-        protected CommandBase(Guid commandId, DateTime commandTime)
-        {
-            this.CommandId = commandId;
-            this.CommandTime = commandTime;
-        }
+        public virtual string CommandParametersHash() => Convert.ToBase64String(Encoding.UTF8.GetBytes(this.GetHashCode().ToString()));
     }
 
     public abstract class CommandBase<TResult> : ICommand<TResult>
     {
-        public Guid CommandId { get; private set; }
         public DateTime CommandTime { get; private set; }
 
         protected CommandBase()
         {
-            this.CommandId = Guid.NewGuid();
             this.CommandTime = DateTime.UtcNow;
         }
 
-        protected CommandBase(Guid commandId, DateTime commandTime)
-        {
-            this.CommandId = commandId;
-            this.CommandTime = commandTime;
-        }
+        public virtual string CommandParametersHash() => Convert.ToBase64String(Encoding.UTF8.GetBytes(this.GetHashCode().ToString()));
     }
 }

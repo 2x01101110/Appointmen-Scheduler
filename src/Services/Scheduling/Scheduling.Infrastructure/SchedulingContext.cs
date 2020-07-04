@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Scheduling.Domain.ScheduleDayAggregate;
+using Scheduling.Infrastructure.Domain;
 using Scheduling.Infrastructure.Domain.ScheduleDayAggregate;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,6 +30,8 @@ namespace Scheduling.Infrastructure
         {
             modelBuilder.ApplyConfiguration(new ScheduleDayEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new AppointmentEntityTypeConfiguration());
+
+            modelBuilder.ApplyConfiguration(new CommandRequestEntityTypeConfiguration());
         }
         
         public Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)
