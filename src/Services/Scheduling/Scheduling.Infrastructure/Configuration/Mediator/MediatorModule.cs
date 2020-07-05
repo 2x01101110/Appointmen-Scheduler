@@ -2,8 +2,6 @@
 using Autofac.Core;
 using Autofac.Features.Variance;
 using MediatR;
-using MediatR.Pipeline;
-using Scheduling.Application.Behavior;
 using System;
 using System.Collections.Generic;
 using System.Linq;

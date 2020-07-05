@@ -5,11 +5,11 @@ namespace BuildingBlocks.Infrastructure.Contracts
 {
     public interface ICommand : IRequest
     {
-        DateTime CommandTime { get; }
+        bool Idempotent { get; }
     }
 
     public interface ICommand<out TResult> : IRequest<TResult>
     {
-        DateTime CommandTime { get; }
+        bool Idempotent { get; }
     }
 }

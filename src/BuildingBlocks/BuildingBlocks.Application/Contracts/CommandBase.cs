@@ -1,31 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace BuildingBlocks.Infrastructure.Contracts
 {
     public abstract class CommandBase : ICommand
     {
-        public DateTime CommandTime { get; private set; }
-        
+        // Ignore duplicate requests for processing order
+        public bool Idempotent { get; }
 
-        protected CommandBase()
+        public CommandBase(bool idempotent) 
         {
-            this.CommandTime = DateTime.UtcNow;
+            this.Idempotent = idempotent;
+        }
+        public CommandBase() 
+        {
+            this.Idempotent = false;
         }
 
-        public virtual string CommandParametersHash() => Convert.ToBase64String(Encoding.UTF8.GetBytes(this.GetHashCode().ToString()));
+        public virtual IEnumerable<object> GetAtomicValues() => new object[] { this.GetHashCode() };
+        public int CommandParametersHash() => GetAtomicValues().Select(x => x != null ? x.GetHashCode() : 0).Aggregate((x, y) => x ^ y);
     }
 
-    public abstract class CommandBase<TResult> : ICommand<TResult>
-    {
-        public DateTime CommandTime { get; private set; }
+    //public abstract class CommandBase<TResult> : ICommand<TResult>
+    //{
+    //    public DateTime CommandTime { get; private set; }
 
-        protected CommandBase()
-        {
-            this.CommandTime = DateTime.UtcNow;
-        }
+    //    protected CommandBase()
+    //    {
+    //        this.CommandTime = DateTime.UtcNow;
+    //    }
 
-        public virtual string CommandParametersHash() => Convert.ToBase64String(Encoding.UTF8.GetBytes(this.GetHashCode().ToString()));
-    }
+    //    public virtual string CommandParametersHash() => 
+    //        Convert.ToBase64String(Encoding.UTF8.GetBytes(this.GetHashCode().ToString()));
+    //}
 }
