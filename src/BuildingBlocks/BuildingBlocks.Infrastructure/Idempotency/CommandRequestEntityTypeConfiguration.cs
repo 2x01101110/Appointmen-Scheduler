@@ -1,19 +1,17 @@
 ﻿using BuildingBlocks.Infrastructure.Idempotency;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Scheduling.Infrastructure.Domain
-{
-    public class CommandRequestEntityTypeConfiguration : IEntityTypeConfiguration<CommandRequest>
+namespace BuildingBlocks.Infrastructure.Idempotency
+{ 
+
+    public class CommandRequestEntityTypeConfiguration : IEntityTypeConfiguration<IdempotentCommandRequest>
     {
-        public void Configure(EntityTypeBuilder<CommandRequest> builder)
+        public void Configure(EntityTypeBuilder<IdempotentCommandRequest> builder)
         {
             builder.ToTable("CommandRequests");
 
-            builder.HasKey(x => x.HashCode);
+            builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Name).HasColumnName("Name");
 

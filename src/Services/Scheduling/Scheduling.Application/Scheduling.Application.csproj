@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Folder Include="Behavior\" />
+    <Folder Include="Commands\Scheduling\" />
     <Folder Include="Queries\" />
   </ItemGroup>
 

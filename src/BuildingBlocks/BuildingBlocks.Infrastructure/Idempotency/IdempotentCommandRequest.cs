@@ -4,9 +4,9 @@ using System.Text;
 
 namespace BuildingBlocks.Infrastructure.Idempotency
 {
-    public class CommandRequest
+    public class IdempotentCommandRequest
     {
-        public string HashCode { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public DateTime Time { get; set; }
     }

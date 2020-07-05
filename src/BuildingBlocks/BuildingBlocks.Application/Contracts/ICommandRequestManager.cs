@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using MediatR;
+using System;
 using System.Threading.Tasks;
 
 namespace Scheduling.Infrastructure.Idempotency
 {
-    public interface ICommandRequestManager
+    public interface IIdempotentCommandRequestManager
     {
-        Task SaveCommand(string hashCode, string commandName, DateTime commandTime);
-        Task<bool> CommandAlreadyExecuted(string hashCode);
+        Task<bool> CommandExistsAsync(Guid id);
+        Task SaveCommandAsync<TCommand>(Guid id) where TCommand : IRequest;
+        Task SaveCommandAsync<TCommand, TResult>(Guid id) where TCommand : IRequest<TResult>;
     }
 }
