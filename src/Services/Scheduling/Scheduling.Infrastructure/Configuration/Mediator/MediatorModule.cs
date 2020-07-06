@@ -2,6 +2,7 @@
 using Autofac.Core;
 using Autofac.Features.Variance;
 using MediatR;
+using Scheduling.Infrastructure.Idempotency;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,9 +38,11 @@ namespace Scheduling.Infrastructure.Configuration.Mediator
                     .FindConstructorsWith(new AllConstructorFinder());
             }
 
-            // builder.RegisterGeneric(typeof(TransactionBehaviour<,>)).As(typeof(IPipelineBehavior<,>));
-            // builder.RegisterGeneric(typeof(RequestPostProcessorBehavior<,>)).As(typeof(IPipelineBehavior<,>));
-            // builder.RegisterGeneric(typeof(RequestPreProcessorBehavior<,>)).As(typeof(IPipelineBehavior<,>));
+            builder.RegisterGeneric(typeof(TransactionBehaviour<,>)).As(typeof(IPipelineBehavior<,>));
+
+            builder.RegisterType<IdempotentCommandRequestManager>()
+                .As<IIdempotentCommandRequestManager>()
+                .InstancePerLifetimeScope();
 
             builder.Register<ServiceFactory>(ctx =>
             {

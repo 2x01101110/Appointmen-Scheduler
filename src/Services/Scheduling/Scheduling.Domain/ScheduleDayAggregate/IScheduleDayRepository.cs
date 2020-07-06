@@ -8,6 +8,6 @@ namespace Scheduling.Domain.ScheduleDayAggregate
     {
         Task<ScheduleDay> FindByDayAsync(DateTime day);
         Task<ScheduleDay> FindByIdAsync(Guid id);
-        Task UpdateAsync(ScheduleDay scheduleDay);
+        void UpdateAsync(ScheduleDay scheduleDay);
     }
 }

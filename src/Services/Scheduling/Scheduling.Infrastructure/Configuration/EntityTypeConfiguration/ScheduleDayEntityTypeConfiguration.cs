@@ -2,7 +2,7 @@
 using Scheduling.Domain.ScheduleDayAggregate;
 using System;
 
-namespace Scheduling.Infrastructure.Domain.ScheduleDayAggregate
+namespace Scheduling.Infrastructure.Configuration.EntityTypeConfiguration
 {
     public class ScheduleDayEntityTypeConfiguration : IEntityTypeConfiguration<ScheduleDay>
     {

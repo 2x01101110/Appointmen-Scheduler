@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Storage;
 using Scheduling.Domain.ScheduleDayAggregate;
-using Scheduling.Infrastructure.Domain.ScheduleDayAggregate;
+using Scheduling.Infrastructure.Configuration.EntityTypeConfiguration;
 using System;
 using System.Data;
 using System.Threading;
@@ -81,7 +81,6 @@ namespace Scheduling.Infrastructure
                 DisposeTransaction();
             }
         }
-
         public void RollbackTransaction()
         {
             try
@@ -93,7 +92,6 @@ namespace Scheduling.Infrastructure
                 DisposeTransaction();
             }
         }
-
         private void DisposeTransaction()
         {
             if (_currentTransaction != null)

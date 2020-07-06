@@ -4,7 +4,7 @@ using Scheduling.Domain.ScheduleDayAggregate;
 using System;
 using System.Threading.Tasks;
 
-namespace Scheduling.Infrastructure.Domain.ScheduleDayAggregate
+namespace Scheduling.Infrastructure.Repositories
 {
     public class ScheduleDayRepository : IScheduleDayRepository
     {
@@ -18,17 +18,23 @@ namespace Scheduling.Infrastructure.Domain.ScheduleDayAggregate
 
         public async Task<ScheduleDay> FindByDayAsync(DateTime day)
         {
-            return await _context.ScheduleDays.FirstOrDefaultAsync();
+            return await _context
+                .ScheduleDays
+                .Include(x => x.Appointments)
+                .FirstOrDefaultAsync(x => x.Day == day);
         }
 
-        public Task<ScheduleDay> FindByIdAsync(Guid id)
+        public async Task<ScheduleDay> FindByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _context
+                .ScheduleDays
+                .Include(x => x.Appointments)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task UpdateAsync(ScheduleDay scheduleDay)
+        public void UpdateAsync(ScheduleDay scheduleDay)
         {
-            throw new NotImplementedException();
+            _context.Entry(scheduleDay).State = EntityState.Modified;
         }
     }
 }

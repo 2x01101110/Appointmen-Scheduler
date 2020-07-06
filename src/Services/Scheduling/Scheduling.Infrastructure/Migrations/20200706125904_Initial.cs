@@ -8,10 +8,24 @@ namespace Scheduling.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "CommandRequests",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Time = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommandRequests", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Schedule",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    Day = table.Column<DateTime>(nullable: false),
                     Available = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -54,6 +68,9 @@ namespace Scheduling.Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Appointments");
+
+            migrationBuilder.DropTable(
+                name: "CommandRequests");
 
             migrationBuilder.DropTable(
                 name: "Schedule");

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Scheduling.Infrastructure.Domain.ScheduleDayAggregate
+namespace Scheduling.Infrastructure.Configuration.EntityTypeConfiguration
 {
     public class AppointmentEntityTypeConfiguration : IEntityTypeConfiguration<Appointment>
     {
