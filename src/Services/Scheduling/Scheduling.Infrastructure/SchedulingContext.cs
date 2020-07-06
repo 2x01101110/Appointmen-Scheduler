@@ -3,9 +3,11 @@ using BuildingBlocks.Infrastructure.Idempotency;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore.Storage;
 using Scheduling.Domain.ScheduleDayAggregate;
-using Scheduling.Infrastructure.Domain;
 using Scheduling.Infrastructure.Domain.ScheduleDayAggregate;
+using System;
+using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,6 +40,67 @@ namespace Scheduling.Infrastructure
         public Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)
         {
             throw new System.NotImplementedException();
+        }
+
+
+        private IDbContextTransaction _currentTransaction;
+        public IDbContextTransaction CurrentTransaction() => _currentTransaction;
+        public bool HasActiveTransaction => _currentTransaction != null;
+        public async Task<IDbContextTransaction> BeginTransaction()
+        {
+            if (_currentTransaction != null) return null;
+
+            _currentTransaction = await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted);
+
+            return _currentTransaction;
+        }
+        public async Task CommitTransactionAsync(IDbContextTransaction transaction)
+        {
+            if (transaction == null)
+            {
+                throw new ArgumentNullException(nameof(transaction));
+            }
+
+            if (transaction != _currentTransaction)
+            {
+                throw new InvalidOperationException("Transaction is not valid");
+            }
+
+            try
+            {
+                await SaveChangesAsync();
+                transaction.Commit();
+            }
+            catch
+            {
+                RollbackTransaction();
+                throw;
+            }
+            finally
+            {
+                DisposeTransaction();
+            }
+        }
+
+        public void RollbackTransaction()
+        {
+            try
+            {
+                _currentTransaction?.Rollback();
+            }
+            finally
+            {
+                DisposeTransaction();
+            }
+        }
+
+        private void DisposeTransaction()
+        {
+            if (_currentTransaction != null)
+            {
+                _currentTransaction.Dispose();
+                _currentTransaction = null;
+            }
         }
     }
 
