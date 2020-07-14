@@ -6,19 +6,19 @@ namespace Scheduling.Domain.ScheduleDayAggregate
 {
     public class AppointmentTimeSlot : ValueObject
     {
-        public DateTime Start { get; }
-        public DateTime End { get; }
+        public int AppointmentStart { get; }
+        public int AppointmentEnd { get; }
 
-        public AppointmentTimeSlot(DateTime start, DateTime end)
+        public AppointmentTimeSlot(int appointmentStart, int appointmentEnd)
         {
-            this.Start = start;
-            this.End = end;
+            this.AppointmentStart = appointmentStart;
+            this.AppointmentEnd = appointmentEnd;
         }
 
         public override IEnumerable<object> GetAtomicValues()
         {
-            yield return this.Start;
-            yield return this.End;
+            yield return this.AppointmentStart;
+            yield return this.AppointmentEnd;
         }
     }
 }

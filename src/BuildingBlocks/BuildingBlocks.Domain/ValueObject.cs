@@ -1,10 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BuildingBlocks.Domain
 {
     public abstract class ValueObject
     {
+        public void CheckBusinessRule(IBusinessRule businessRule)
+        {
+            if (!businessRule.IsValid())
+            {
+                throw new Exception(businessRule.Message);
+            }
+        }
+
         public abstract IEnumerable<object> GetAtomicValues();
 
         protected static bool EqualsOperator(ValueObject left, ValueObject right)

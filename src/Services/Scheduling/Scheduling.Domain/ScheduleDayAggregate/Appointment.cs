@@ -19,10 +19,6 @@ namespace Scheduling.Domain.ScheduleDayAggregate
             this.AddDomainEvent(new AppointmentCreatedDomainEvent());
         }
 
-        private Appointment() {
-
-        }
-
         public static Appointment CreateNew(AppointmentTimeSlot appointmentTimeSlot, ContactInformation contactInformation)
         {
             return new Appointment(appointmentTimeSlot, contactInformation);
