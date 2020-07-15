@@ -4,7 +4,8 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Storage;
-using Scheduling.Domain.ScheduleDayAggregate;
+using Scheduling.Domain.ScheduleDays;
+using Scheduling.Domain.Services;
 using Scheduling.Infrastructure.Configuration.EntityTypeConfiguration;
 using System;
 using System.Data;
@@ -27,6 +28,7 @@ namespace Scheduling.Infrastructure
             this._mediator = mediator;
         }
 
+        public DbSet<Service> Services { get; set; }
         public DbSet<ScheduleDay> ScheduleDays { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

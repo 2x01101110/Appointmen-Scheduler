@@ -1,10 +1,11 @@
 ﻿using BuildingBlocks.Domain;
 using Microsoft.EntityFrameworkCore;
-using Scheduling.Domain.ScheduleDayAggregate;
+using Scheduling.Domain.ScheduleDays;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace Scheduling.Infrastructure.Repositories
+namespace Scheduling.Infrastructure.Repositories.ScheduleDaysRepository
 {
     public class ScheduleDayRepository : IScheduleDayRepository
     {
@@ -16,12 +17,21 @@ namespace Scheduling.Infrastructure.Repositories
             this._context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        public void AddScheduleDay(ScheduleDay scheduleDay)
+        {
+            this._context.ScheduleDays.Add(scheduleDay);
+        }
+
         public async Task<ScheduleDay> FindByDayAsync(DateTime day)
         {
-            return await _context
-                .ScheduleDays
+            var dayOfWeek = (int)day.Date.DayOfWeek;
+
+            return await _context.ScheduleDays
+                .Where(x => x.CalendarDay == day || x.DayOfWeek == dayOfWeek)
                 .Include(x => x.Appointments)
-                .FirstOrDefaultAsync(x => x.Day == day);
+                // Order descending by Calendar Day so the firs result always is day schedule override (if present)
+                .OrderByDescending(x => x.CalendarDay)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<ScheduleDay> FindByIdAsync(Guid id)

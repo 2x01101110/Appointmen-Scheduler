@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Scheduling.Domain.ScheduleDayAggregate
+namespace Scheduling.Domain.ScheduleDays
 {
     public class AppointmentTimeSlot : ValueObject
     {

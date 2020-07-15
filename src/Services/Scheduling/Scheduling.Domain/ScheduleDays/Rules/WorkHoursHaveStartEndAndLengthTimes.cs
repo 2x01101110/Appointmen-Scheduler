@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Scheduling.Domain.ScheduleDayAggregate.Rules
+namespace Scheduling.Domain.ScheduleDays.Rules
 {
     public class WorkHoursHaveStartEndAndLengthTimes : IBusinessRule
     {

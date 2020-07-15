@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Scheduling.Domain.ScheduleDayAggregate;
+using Scheduling.Domain.ScheduleDays;
 using System;
 
 namespace Scheduling.Infrastructure.Configuration.EntityTypeConfiguration
@@ -12,7 +12,7 @@ namespace Scheduling.Infrastructure.Configuration.EntityTypeConfiguration
 
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.Day);
+            builder.Property(x => x.CalendarDay);
 
             builder.Ignore(x => x.DomainEvents);
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Scheduling.Domain.ScheduleDayAggregate.Rules
+namespace Scheduling.Domain.ScheduleDays.Rules
 {
     class AppointmentTimeSlotNotOverlapping : IBusinessRule
     {

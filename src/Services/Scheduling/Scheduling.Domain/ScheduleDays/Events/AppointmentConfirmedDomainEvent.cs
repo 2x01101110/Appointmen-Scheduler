@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Scheduling.Domain.ScheduleDayAggregate.Events
+namespace Scheduling.Domain.ScheduleDays.Events
 {
     public class AppointmentConfirmedDomainEvent : INotification
     {

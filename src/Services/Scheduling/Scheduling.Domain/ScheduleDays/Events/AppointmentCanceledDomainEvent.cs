@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Scheduling.Domain.ScheduleDayAggregate.Events
+namespace Scheduling.Domain.ScheduleDays.Events
 {
     public class AppointmentCanceledDomainEvent : INotification
     {

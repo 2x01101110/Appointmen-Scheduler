@@ -1,8 +1,8 @@
 ﻿using BuildingBlocks.Domain;
-using Scheduling.Domain.ScheduleDayAggregate.Events;
+using Scheduling.Domain.ScheduleDays.Events;
 using System;
 
-namespace Scheduling.Domain.ScheduleDayAggregate
+namespace Scheduling.Domain.ScheduleDays
 {
     public class Appointment : Entity<Guid>
     {

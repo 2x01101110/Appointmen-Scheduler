@@ -1,10 +1,10 @@
 ﻿using BuildingBlocks.Domain;
-using Scheduling.Domain.ScheduleDayAggregate.Rules;
+using Scheduling.Domain.ScheduleDays.Rules;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Scheduling.Domain.ScheduleDayAggregate
+namespace Scheduling.Domain.ScheduleDays
 {
     public class WorkHours : ValueObject
     {

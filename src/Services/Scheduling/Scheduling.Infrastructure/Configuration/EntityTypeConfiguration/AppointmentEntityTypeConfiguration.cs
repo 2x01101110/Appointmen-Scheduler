@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Scheduling.Domain.ScheduleDayAggregate;
+using Scheduling.Domain.ScheduleDays;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -45,11 +45,11 @@ namespace Scheduling.Infrastructure.Configuration.EntityTypeConfiguration
 
             builder.OwnsOne(x => x.AppointmentTimeSlot, y =>
             {
-                y.Property(p => p.Start)
-                    .HasColumnName("Start")
+                y.Property(p => p.AppointmentStart)
+                    .HasColumnName("AppointmentStart")
                     .IsRequired(true);
-                y.Property(p => p.End)
-                    .HasColumnName("End")
+                y.Property(p => p.AppointmentEnd)
+                    .HasColumnName("AppointmentEnd")
                     .IsRequired(true);
             });
         }
