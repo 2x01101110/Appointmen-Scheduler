@@ -1,16 +1,11 @@
 ﻿using BuildingBlocks.Domain;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Scheduling.Domain.Services
 {
-    /// <summary>
-    /// Replicated from Services.Service microservice
-    /// </summary>
     public class Service : Entity<Guid>, IAggregateRoot
     {
-        public string Name { get; }
+        public string Name { get; private set; }
 
         private Service(Guid id, string name)
         {
@@ -21,6 +16,11 @@ namespace Scheduling.Domain.Services
         public static Service CreateService(Guid id, string name)
         {
             return new Service(id, name);
+        }
+
+        public void UpdateService(string name)
+        {
+            this.Name = name;
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using BuildingBlocks.Domain;
 using Scheduling.Domain.ScheduleDays.Rules;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Scheduling.Domain.ScheduleDays
 {

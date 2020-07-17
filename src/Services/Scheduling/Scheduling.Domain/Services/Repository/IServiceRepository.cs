@@ -3,5 +3,6 @@
     public interface IServiceRepository
     {
         void AddService(Service service);
+        void UpdateService(Service service);
     }
 }
