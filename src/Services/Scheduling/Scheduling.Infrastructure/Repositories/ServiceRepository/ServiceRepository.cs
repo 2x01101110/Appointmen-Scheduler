@@ -21,5 +21,10 @@ namespace Scheduling.Infrastructure.Repositories.ServiceRepository
         {
             this._context.Services.Add(service);
         }
+
+        public void UpdateService(Service service)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

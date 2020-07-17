@@ -27,11 +27,11 @@ namespace Scheduling.Domain.ScheduleDays.Rules
                 return false;
 
             // Check if appointment time slot length matches to work hours appointment length
-            if (timeSlotWorkHours.AppointmentLengthInMinutes != this._appointmentTimeSlot.AppointmentEnd - this._appointmentTimeSlot.AppointmentStart)
+            if (timeSlotWorkHours.AppointmentLength != this._appointmentTimeSlot.AppointmentEnd - this._appointmentTimeSlot.AppointmentStart)
                 return false;
 
             // Cannot create appointment after the workhours end
-            if (this._appointmentTimeSlot.AppointmentEnd + timeSlotWorkHours.AppointmentLengthInMinutes >= timeSlotWorkHours.WorkHoursEnd)
+            if (this._appointmentTimeSlot.AppointmentEnd + timeSlotWorkHours.AppointmentLength >= timeSlotWorkHours.WorkHoursEnd)
                 return false;
 
             return true;

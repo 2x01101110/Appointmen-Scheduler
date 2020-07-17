@@ -14,6 +14,9 @@ namespace Scheduling.Domain.ScheduleDays
         public Guid? StaffId { get; }
         public DateTime? CalendarDay { get; }
         public int DayOfWeek { get; }
+
+        public bool TimeSlotSelectable { get; }
+        
         public IReadOnlyCollection<WorkHours> WorkHours => _workHours;
         public IReadOnlyCollection<Appointment> Appointments => _appointments;
 
@@ -34,14 +37,36 @@ namespace Scheduling.Domain.ScheduleDays
             this._workHours = workHours;
         }
 
+        /// <summary>
+        /// Create reccuring schedule for day of the week.
+        /// </summary>
+        /// <param name="dayOfWeek">Weekly reccuring schedule day.</param>
+        /// <param name="workHours">Work hours for the day.</param>
+        /// <param name="serviceId">Id of the service.</param>
+        /// <param name="staffId">If specified, schedule is bound to one service staff member.</param>
+        /// <returns></returns>
         public static ScheduleDay CreateSchedule(DayOfWeek dayOfWeek, List<WorkHours> workHours, Guid serviceId, Guid? staffId) 
         {
             return new ScheduleDay(dayOfWeek, workHours, serviceId, staffId);
         }
 
+        /// <summary>
+        /// Create one time schedule. Overrides reccuring week day schedule.
+        /// </summary>
+        /// <param name="calendarDay">Calendar day for the schedule.</param>
+        /// <param name="workHours">Workhours for the day.</param>
+        /// <param name="serviceId">Id of the service.</param>
+        /// <param name="staffId">If specified, schedule is bound to one service staff member.</param>
+        /// <returns></returns>
         public static ScheduleDay CreateSchedule(DateTime calendarDay, List<WorkHours> workHours, Guid serviceId, Guid? staffId)
         {
             return new ScheduleDay(calendarDay, workHours, serviceId, staffId);
+        }
+
+        public void UpdateScheduleDay(List<WorkHours> workHours)
+        {
+            this._workHours.Clear();
+            this._workHours.AddRange(workHours);
         }
 
         //public void CreateAppointment(AppointmentTimeSlot appointmentTimeSlot, ContactInformation contactInformation)
