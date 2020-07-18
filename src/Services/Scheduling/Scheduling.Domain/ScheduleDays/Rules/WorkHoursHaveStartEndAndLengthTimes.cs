@@ -9,25 +9,28 @@ namespace Scheduling.Domain.ScheduleDays.Rules
     {
         private readonly int _workHoursStart;
         private readonly int _workHoursEnd;
-        private readonly int _appointmentLengthInMinutes;
+        private readonly int? _appointmentLenght;
 
-        public WorkHoursHaveStartEndAndLengthTimes(int workHoursStart, int workHoursEnd, int appointmentLengthInMinutes)
+        public WorkHoursHaveStartEndAndLengthTimes(int workHoursStart, int workHoursEnd, int? appointmentLenght)
         {
             this._workHoursStart = workHoursStart;
             this._workHoursEnd = workHoursEnd;
-            this._appointmentLengthInMinutes = appointmentLengthInMinutes;
+            this._appointmentLenght = appointmentLenght;
         }
 
         public bool IsValid()
         {
             if (this._workHoursStart == this._workHoursEnd ||
                 this._workHoursStart > this._workHoursEnd)
+
                 return false;
 
-            if (this._workHoursEnd - this._workHoursStart < this._appointmentLengthInMinutes ||
-                this._appointmentLengthInMinutes == 0 ||
-                (this._workHoursEnd - this._workHoursStart) % this._appointmentLengthInMinutes != 0)
-                return false;
+            if (this._appointmentLenght != null)
+            {
+                if (this._workHoursEnd - this._workHoursStart < this._appointmentLenght || 
+                    this._appointmentLenght == 0 || (this._workHoursEnd - this._workHoursStart) % this._appointmentLenght != 0)
+                    return false;
+            }
 
             return true;
         }

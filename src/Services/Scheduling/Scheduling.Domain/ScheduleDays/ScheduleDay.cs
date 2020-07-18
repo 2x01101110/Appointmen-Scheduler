@@ -14,68 +14,81 @@ namespace Scheduling.Domain.ScheduleDays
         public Guid? StaffId { get; }
         public DateTime? CalendarDay { get; }
         public int DayOfWeek { get; }
-
-        public bool TimeSlotSelectable { get; }
-        
+        public bool ClientCanSelectTimeSlot { get; private set; }
         public IReadOnlyCollection<WorkHours> WorkHours => _workHours;
         public IReadOnlyCollection<Appointment> Appointments => _appointments;
 
-        private ScheduleDay(DayOfWeek dayOfWeek, List<WorkHours> workHours, Guid serviceId, Guid? staffId) 
+        private ScheduleDay(Guid serviceId, Guid? staffId, DayOfWeek dayOfWeek, List<WorkHours> workHours, bool clientCanSelectTimeSlot) 
         {
+            this.CheckBusinessRule(new WorkHoursNotOverlapping(workHours));
+
             this.ServiceId = serviceId;
             this.StaffId = staffId;
             this.DayOfWeek = (int)dayOfWeek;
             this._workHours = workHours;
+            this.ClientCanSelectTimeSlot = clientCanSelectTimeSlot;
         }
 
-        private ScheduleDay(DateTime calendarDay, List<WorkHours> workHours, Guid serviceId, Guid? staffId)
+        private ScheduleDay(Guid serviceId, Guid? staffId, DateTime calendarDay, List<WorkHours> workHours, bool clientCanSelectTimeSlot)
         {
+            this.CheckBusinessRule(new WorkHoursNotOverlapping(workHours));
+
             this.ServiceId = serviceId;
             this.StaffId = staffId;
             this.CalendarDay = calendarDay;
             this.DayOfWeek = (int)calendarDay.Date.DayOfWeek;
             this._workHours = workHours;
+            this.ClientCanSelectTimeSlot = clientCanSelectTimeSlot;
         }
 
-        /// <summary>
-        /// Create reccuring schedule for day of the week.
-        /// </summary>
-        /// <param name="dayOfWeek">Weekly reccuring schedule day.</param>
-        /// <param name="workHours">Work hours for the day.</param>
-        /// <param name="serviceId">Id of the service.</param>
-        /// <param name="staffId">If specified, schedule is bound to one service staff member.</param>
-        /// <returns></returns>
-        public static ScheduleDay CreateSchedule(DayOfWeek dayOfWeek, List<WorkHours> workHours, Guid serviceId, Guid? staffId) 
+        public static ScheduleDay CreateReccuringWeeklySchedule(
+            Guid serviceId, Guid? staffId, DayOfWeek dayOfWeek, List<WorkHours> workHours, bool clientCanSelectTimeSlot) 
         {
-            return new ScheduleDay(dayOfWeek, workHours, serviceId, staffId);
+            return new ScheduleDay(serviceId, staffId, dayOfWeek, workHours, clientCanSelectTimeSlot);
         }
 
-        /// <summary>
-        /// Create one time schedule. Overrides reccuring week day schedule.
-        /// </summary>
-        /// <param name="calendarDay">Calendar day for the schedule.</param>
-        /// <param name="workHours">Workhours for the day.</param>
-        /// <param name="serviceId">Id of the service.</param>
-        /// <param name="staffId">If specified, schedule is bound to one service staff member.</param>
-        /// <returns></returns>
-        public static ScheduleDay CreateSchedule(DateTime calendarDay, List<WorkHours> workHours, Guid serviceId, Guid? staffId)
+        public static ScheduleDay CreateOneTimeSchedule(
+            Guid serviceId, Guid? staffId, DateTime calendarDay, List<WorkHours> workHours, bool clientCanSelectTimeSlot)
         {
-            return new ScheduleDay(calendarDay, workHours, serviceId, staffId);
+            return new ScheduleDay(serviceId, staffId, calendarDay, workHours, clientCanSelectTimeSlot);
         }
 
-        public void UpdateScheduleDay(List<WorkHours> workHours)
+        public void UpdateScheduleDay(List<WorkHours> workHours, bool clientCanSelectTimeSlot)
         {
             this._workHours.Clear();
             this._workHours.AddRange(workHours);
+
+            this.ClientCanSelectTimeSlot = clientCanSelectTimeSlot;
         }
 
-        //public void CreateAppointment(AppointmentTimeSlot appointmentTimeSlot, ContactInformation contactInformation)
-        //{
-        //    this.CheckBusinessRule(new AppointmentCannotBeAddedToClosedSchedule(this.Open));
-        //    this.CheckBusinessRule(new AppointmentTimeSlotInWorkHours(this._workHours, appointmentTimeSlot));
-        //    this.CheckBusinessRule(new AppointmentTimeSlotNotOverlapping(this._appointments, appointmentTimeSlot));
+        public void CreateAppointment(AppointmentTimeSlot appointmentTimeSlot, ContactInformation contactInformation)
+        {
+            // Appointment with timeslot
+            if (this.ClientCanSelectTimeSlot && appointmentTimeSlot != null)
+            {
+                // Check if appointment is within working hours
+                this.CheckBusinessRule(new AppointmentTimeSlotInWorkHours(this._workHours, appointmentTimeSlot));
+                // Check if no overlapping schedules
+                this.CheckBusinessRule(new AppointmentTimeSlotNotOverlapping(this._appointments, appointmentTimeSlot));
 
-        //    this._appointments.Add(Appointment.CreateNew(appointmentTimeSlot, contactInformation));
-        //}
+                Appointment newAppointment = 
+                    Appointment.CreateAppointmentWithTimeSlot(this.CalendarDay ?? DateTime.UtcNow.Date, appointmentTimeSlot, contactInformation);
+
+                this._appointments.Add(newAppointment);
+            }
+            // Appointment without timeslot
+            else if (!this.ClientCanSelectTimeSlot && appointmentTimeSlot != null)
+            {
+                Appointment newAppointment =
+                    Appointment.CreateAppointmentWithoutTimeSlot(this.CalendarDay ?? DateTime.UtcNow.Date, contactInformation);
+
+                this._appointments.Add(newAppointment);
+            }
+            else 
+            {
+                throw new ArgumentException($"Placeholder exception. Cannot create appointment.");
+            }
+            
+        }
     }
 }

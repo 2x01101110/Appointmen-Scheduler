@@ -11,12 +11,11 @@ namespace Scheduling.Domain.ScheduleDays
         public int WorkHoursEnd { get; }
         public string Note { get; set; }
 
-        private WorkHours(int? appointmentLength, int start, int end, string note)
+        private WorkHours(int? appointmentLenght, int start, int end, string note)
         {
-            // changed from int to int?
-            //this.CheckBusinessRule(new WorkHoursHaveStartEndAndLengthTimes(start, end, appointmentLengthInMinutes));
+            this.CheckBusinessRule(new WorkHoursHaveStartEndAndLengthTimes(start, end, appointmentLenght));
 
-            this.AppointmentLength = appointmentLength;
+            this.AppointmentLength = appointmentLenght;
             this.WorkHoursStart = start;
             this.WorkHoursEnd = end;
             this.Note = note;

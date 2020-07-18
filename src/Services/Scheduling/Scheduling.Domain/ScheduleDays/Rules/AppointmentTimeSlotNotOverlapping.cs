@@ -19,7 +19,7 @@ namespace Scheduling.Domain.ScheduleDays.Rules
 
         public bool IsValid()
         {
-            return this._appointments
+            return !this._appointments
                 .Any(x => 
                     x.AppointmentTimeSlot.AppointmentStart > this._appointmentTimeSlot.AppointmentStart &&
                     x.AppointmentTimeSlot.AppointmentEnd < this._appointmentTimeSlot.AppointmentEnd ||
