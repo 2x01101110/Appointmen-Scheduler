@@ -21,13 +21,12 @@ namespace Scheduling.Domain.ScheduleDays.Rules
         {
             foreach (var workHours in this._workHours)
             {
-                var overlapping = !this._workHours
-                    .Where(x => x != workHours)
-                    .Any(x => x.WorkHoursStart > workHours.WorkHoursStart && x.WorkHoursEnd < workHours.WorkHoursEnd ||
-                              x.WorkHoursStart == workHours.WorkHoursStart && x.WorkHoursEnd == x.WorkHoursEnd);
+                var filteredWorkHours = this._workHours.Where(x => x != workHours);
 
-                if (overlapping)
+                if (filteredWorkHours.Count() > 0 && !filteredWorkHours.Any(x => x.WorkHoursStart >= workHours.WorkHoursStart && x.WorkHoursEnd >= workHours.WorkHoursEnd))
+                {
                     return false;
+                }
             }
 
             return true;

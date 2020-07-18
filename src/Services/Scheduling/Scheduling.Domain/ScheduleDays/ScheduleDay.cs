@@ -63,6 +63,11 @@ namespace Scheduling.Domain.ScheduleDays
 
         public void CreateAppointment(AppointmentTimeSlot appointmentTimeSlot, ContactInformation contactInformation)
         {
+            // NOTE!!!
+            // WHAT IF CLIENT CAN SELECT TIME AND AppointmentTimeSlot.AppointmentStart AND AppointmentTimeSlot.AppointmentEnd are defined ()BUT))
+            // Schedule day workhours have no specified AppointmentLength ???
+            // WE DON'T REALLY NEED AppointmentTimeSlot.AppointmentEnd either BECAUSE it's AppointmentTimeSlot.AppointmentStart + WorkHours.AppointmentLength
+
             // Appointment with timeslot
             if (this.ClientCanSelectTimeSlot && appointmentTimeSlot != null)
             {

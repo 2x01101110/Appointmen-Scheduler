@@ -20,17 +20,23 @@ namespace Scheduling.Domain.ScheduleDays.Rules
 
         public bool IsValid()
         {
-            if (this._workHoursStart == this._workHoursEnd ||
-                this._workHoursStart > this._workHoursEnd)
-
-                return false;
-
             if (this._appointmentLenght != null)
             {
-                if (this._workHoursEnd - this._workHoursStart < this._appointmentLenght || 
-                    this._appointmentLenght == 0 || (this._workHoursEnd - this._workHoursStart) % this._appointmentLenght != 0)
+                // Appointment duration cannot be equal or less than 0
+                if (this._appointmentLenght.Value <= 0) 
+                    return false;
+
+                // Must fit all appointment intervals into workhours
+                // Appointment length cannot be greater than work hours length
+                var duration = this._workHoursEnd - this._workHoursStart;
+                if (duration < this._appointmentLenght.Value || duration % this._appointmentLenght.Value != 0)
                     return false;
             }
+
+            // Work hours start and end cannot be equal
+            // Workhour start cannot be greater than work hour end
+            if (this._workHoursStart == this._workHoursEnd || this._workHoursStart > this._workHoursEnd)
+                return false;
 
             return true;
         }
