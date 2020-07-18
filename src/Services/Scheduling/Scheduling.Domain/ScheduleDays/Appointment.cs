@@ -9,6 +9,7 @@ namespace Scheduling.Domain.ScheduleDays
         public AppointmentTimeSlot AppointmentTimeSlot { get; private set; }
         public AppointmentStatus AppointmentStatus { get; private set; }
         public ContactInformation ContactInformation { get; private set; }
+        public string Note { get; }
 
         private Appointment(AppointmentTimeSlot appointmentTimeSlot, ContactInformation contactInformation)
         {
