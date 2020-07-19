@@ -26,7 +26,11 @@ namespace Scheduling.Domain.ScheduleDays
             this.ServiceId = serviceId;
             this.StaffId = staffId;
             this.DayOfWeek = (int)dayOfWeek;
-            this._workHours = workHours;
+
+            // Initilizing backing fields?
+            this._workHours = workHours ?? new List<WorkHours>();
+            this._appointments = _appointments ?? new List<Appointment>();
+
             this.ClientCanSelectTimeSlot = clientCanSelectTimeSlot;
         }
 
@@ -38,7 +42,11 @@ namespace Scheduling.Domain.ScheduleDays
             this.StaffId = staffId;
             this.CalendarDay = calendarDay;
             this.DayOfWeek = (int)calendarDay.Date.DayOfWeek;
-            this._workHours = workHours;
+
+            // Initilizing backing fields?
+            this._workHours = workHours ?? new List<WorkHours>();
+            this._appointments = _appointments ?? new List<Appointment>();
+
             this.ClientCanSelectTimeSlot = clientCanSelectTimeSlot;
         }
 
@@ -57,6 +65,12 @@ namespace Scheduling.Domain.ScheduleDays
 
         public void CreateAppointment(AppointmentTimeSlot appointmentTimeSlot, ContactInformation contactInformation)
         {
+            // NEED TO CHECK IF NEW APPOINTMENT TIME SLOT START TIME IS WITHIN DEFFINED work hour time slots
+            // 09:00
+            // 09:20
+            // 09:40
+            // CANNOT CREATE A NEW APPOINTMENT @ 09:30
+
             var scheduleCalendarDay = this.CalendarDay ?? DateTime.UtcNow.Date;
 
             // Check if passed appointment day matches selected calendar day of the schedule

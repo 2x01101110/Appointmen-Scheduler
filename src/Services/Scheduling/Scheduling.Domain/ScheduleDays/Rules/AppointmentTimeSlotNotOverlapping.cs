@@ -24,21 +24,26 @@ namespace Scheduling.Domain.ScheduleDays.Rules
 
         public bool IsValid()
         {
+            // Select work hours for the new appointment
             var appointmentTimeSlotWorkHours = this._workHours
-                .FirstOrDefault(x => x.WorkHoursStart >= this._appointmentTimeSlot.AppointmentStart &&
-                    this._appointmentTimeSlot.AppointmentStart + x.AppointmentLength < x.WorkHoursEnd);
+                .FirstOrDefault(x => this._appointmentTimeSlot.AppointmentStart <= x.WorkHoursEnd &&
+                    this._appointmentTimeSlot.AppointmentStart + x.AppointmentLength >= x.WorkHoursStart);
 
-            if (appointmentTimeSlotWorkHours == null) return false;
+            // Null means new appointment is not withing work hours
+            if (appointmentTimeSlotWorkHours == null)
+            {
+                return false;
+            }
 
             var appointmentDuration = appointmentTimeSlotWorkHours.AppointmentLength;
 
-            return !this._appointments
-                .Any(x => 
-                    x.AppointmentTimeSlot.AppointmentStart > this._appointmentTimeSlot.AppointmentStart &&
-                    x.AppointmentTimeSlot.AppointmentStart + appointmentDuration < this._appointmentTimeSlot.AppointmentStart + appointmentDuration ||
-                    x.AppointmentTimeSlot.AppointmentStart == this._appointmentTimeSlot.AppointmentStart &&
-                    x.AppointmentTimeSlot.AppointmentStart + appointmentDuration == this._appointmentTimeSlot.AppointmentStart + appointmentDuration
-                );
+            // check if trying to insert duplicate appointment - matching start time slot times
+            if (this._appointments.Any(x => x.AppointmentTimeSlot.AppointmentStart == this._appointmentTimeSlot.AppointmentStart))
+            {
+                return false;
+            }
+
+            return true;
         }
         
         public string Message => "Appointments are overlapping";

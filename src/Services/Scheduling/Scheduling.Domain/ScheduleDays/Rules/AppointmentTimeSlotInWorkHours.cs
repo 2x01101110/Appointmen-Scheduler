@@ -17,22 +17,21 @@ namespace Scheduling.Domain.ScheduleDays.Rules
 
         public bool IsValid()
         {
-            return !this._workHours
-                .Any(x => x.WorkHoursStart >= this._appointmentTimeSlot.AppointmentStart &&
-                    this._appointmentTimeSlot.AppointmentStart + x.AppointmentLength < x.WorkHoursEnd);
+            var result = this._workHours
+                .FirstOrDefault(x => this._appointmentTimeSlot.AppointmentStart <= x.WorkHoursEnd &&
+                    this._appointmentTimeSlot.AppointmentStart + x.AppointmentLength >= x.WorkHoursStart);
 
-            //// Check if appointment has have valid time slot, if it is in workhours for the day
-            //if (appointmentTimeSlotWorkHours == null) return false;
+            if (result == null)
+            {
+                return false;
+            }
 
-            //// Check if appointment time slot length matches to work hours appointment length
-            ////if (appointmentTimeSlotWorkHours.AppointmentLength != this._appointmentTimeSlot.AppointmentEnd - this._appointmentTimeSlot.AppointmentStart)
-            ////    return false;
+            if (result.WorkHoursEnd < _appointmentTimeSlot.AppointmentStart + result.AppointmentLength)
+            {
+                return false;
+            }
 
-            ////// Cannot create appointment after the workhours end
-            ////if (this._appointmentTimeSlot.AppointmentEnd + timeSlotWorkHours.AppointmentLength >= timeSlotWorkHours.WorkHoursEnd)
-            ////    return false;
-
-            //return true;
+            return true;
         }
 
         public string Message => "Appointment time slot is not in schedule day work hours";
