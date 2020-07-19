@@ -1,7 +1,5 @@
 ﻿using Scheduling.Domain.ScheduleDays;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Scheduling.UnitTests.Domain.ScheduleDays

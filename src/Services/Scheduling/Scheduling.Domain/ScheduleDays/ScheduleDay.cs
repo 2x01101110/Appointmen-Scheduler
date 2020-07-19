@@ -18,6 +18,7 @@ namespace Scheduling.Domain.ScheduleDays
         public IReadOnlyCollection<WorkHours> WorkHours => _workHours;
         public IReadOnlyCollection<Appointment> Appointments => _appointments;
 
+        #region Schedule day creation
         private ScheduleDay(Guid serviceId, Guid? staffId, DayOfWeek dayOfWeek, List<WorkHours> workHours, bool clientCanSelectTimeSlot) 
         {
             this.CheckBusinessRule(new WorkHoursNotOverlapping(workHours));
@@ -52,7 +53,46 @@ namespace Scheduling.Domain.ScheduleDays
         {
             return new ScheduleDay(serviceId, staffId, calendarDay, workHours, clientCanSelectTimeSlot);
         }
+        #endregion
 
+        public void CreateAppointment(AppointmentTimeSlot appointmentTimeSlot, ContactInformation contactInformation)
+        {
+            var scheduleCalendarDay = this.CalendarDay ?? DateTime.UtcNow.Date;
+
+            // Check if passed appointment day matches selected calendar day of the schedule
+            if (appointmentTimeSlot.AppointmentDay != scheduleCalendarDay)
+            {
+                throw new Exception("Invalid calendar day provided for creation of appointment.");
+            }
+
+            // Client can select time slot and client has provided time slot
+            if (this.ClientCanSelectTimeSlot && appointmentTimeSlot.AppointmentStart != null)
+            {
+                // Check if appointment is within working hours
+                this.CheckBusinessRule(new AppointmentTimeSlotInWorkHours(this._workHours, appointmentTimeSlot));
+                // Check if no overlapping schedules
+                this.CheckBusinessRule(new AppointmentTimeSlotNotOverlapping(this._workHours, this._appointments, appointmentTimeSlot));
+
+                Appointment newAppointment =
+                    Appointment.CreateAppointmentWithTimeSlot(scheduleCalendarDay, appointmentTimeSlot, contactInformation);
+
+                this._appointments.Add(newAppointment);
+            }
+            // Client cannot select time slot and client has not provided time slot
+            else if (!this.ClientCanSelectTimeSlot && appointmentTimeSlot.AppointmentStart == null)
+            {
+                Appointment newAppointment =
+                    Appointment.CreateAppointmentWithoutTimeSlot(scheduleCalendarDay, contactInformation);
+
+                this._appointments.Add(newAppointment);
+            }
+            // Invalid appointment creation request
+            else 
+            {
+                throw new ArgumentException($"Placeholder exception. Cannot create appointment.");
+            }
+        }
+        
         public void UpdateScheduleDay(List<WorkHours> workHours, bool clientCanSelectTimeSlot)
         {
             this._workHours.Clear();
@@ -61,39 +101,9 @@ namespace Scheduling.Domain.ScheduleDays
             this.ClientCanSelectTimeSlot = clientCanSelectTimeSlot;
         }
 
-        public void CreateAppointment(AppointmentTimeSlot appointmentTimeSlot, ContactInformation contactInformation)
-        {
-            // NOTE!!!
-            // WHAT IF CLIENT CAN SELECT TIME AND AppointmentTimeSlot.AppointmentStart AND AppointmentTimeSlot.AppointmentEnd are defined ()BUT))
-            // Schedule day workhours have no specified AppointmentLength ???
-            // WE DON'T REALLY NEED AppointmentTimeSlot.AppointmentEnd either BECAUSE it's AppointmentTimeSlot.AppointmentStart + WorkHours.AppointmentLength
-
-            // Appointment with timeslot
-            if (this.ClientCanSelectTimeSlot && appointmentTimeSlot != null)
-            {
-                // Check if appointment is within working hours
-                this.CheckBusinessRule(new AppointmentTimeSlotInWorkHours(this._workHours, appointmentTimeSlot));
-                // Check if no overlapping schedules
-                this.CheckBusinessRule(new AppointmentTimeSlotNotOverlapping(this._appointments, appointmentTimeSlot));
-
-                Appointment newAppointment = 
-                    Appointment.CreateAppointmentWithTimeSlot(this.CalendarDay ?? DateTime.UtcNow.Date, appointmentTimeSlot, contactInformation);
-
-                this._appointments.Add(newAppointment);
-            }
-            // Appointment without timeslot
-            else if (!this.ClientCanSelectTimeSlot && appointmentTimeSlot != null)
-            {
-                Appointment newAppointment =
-                    Appointment.CreateAppointmentWithoutTimeSlot(this.CalendarDay ?? DateTime.UtcNow.Date, contactInformation);
-
-                this._appointments.Add(newAppointment);
-            }
-            else 
-            {
-                throw new ArgumentException($"Placeholder exception. Cannot create appointment.");
-            }
-            
-        }
+        // DateTime AppointmentDay   
+        // int? AppointmentStart
+        // 1) always check if AppointmentStart (if not null) is in work hours
+        //      1.1) If WorkHours.AppointmentLength is not null - check if AppointmentTimeSlot.AppointmentStart !> WorkHours.WorkHoursEnd + WorkHours.AppointmentLenght
     }
 }

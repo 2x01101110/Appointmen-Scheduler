@@ -8,13 +8,11 @@ namespace Scheduling.Domain.ScheduleDays
     {
         public DateTime AppointmentDay { get; }
         public int? AppointmentStart { get; }
-        public int? AppointmentEnd { get; }
 
-        public AppointmentTimeSlot(DateTime appointmentDay, int appointmentStart, int appointmentEnd)
+        public AppointmentTimeSlot(DateTime appointmentDay, int appointmentStart)
         {
             this.AppointmentDay = appointmentDay;
             this.AppointmentStart = appointmentStart;
-            this.AppointmentEnd = appointmentEnd;
         }
 
         public AppointmentTimeSlot(DateTime appointmentDay)
@@ -26,7 +24,6 @@ namespace Scheduling.Domain.ScheduleDays
         {
             yield return this.AppointmentDay;
             yield return this.AppointmentStart;
-            yield return this.AppointmentEnd;
         }
     }
 }
