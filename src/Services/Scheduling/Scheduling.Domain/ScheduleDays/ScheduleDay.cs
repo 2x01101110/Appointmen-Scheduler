@@ -65,30 +65,22 @@ namespace Scheduling.Domain.ScheduleDays
 
         public void CreateAppointment(AppointmentTimeSlot appointmentTimeSlot, ContactInformation contactInformation)
         {
-            // NEED TO CHECK IF NEW APPOINTMENT TIME SLOT START TIME IS WITHIN DEFFINED work hour time slots
-            // 09:00
-            // 09:20
-            // 09:40
-            // CANNOT CREATE A NEW APPOINTMENT @ 09:30
-
             var scheduleCalendarDay = this.CalendarDay ?? DateTime.UtcNow.Date;
 
             // Check if passed appointment day matches selected calendar day of the schedule
-            if (appointmentTimeSlot.AppointmentDay != scheduleCalendarDay)
+            if (appointmentTimeSlot == null || appointmentTimeSlot.AppointmentDay != scheduleCalendarDay)
             {
-                throw new Exception("Invalid calendar day provided for creation of appointment.");
+                throw new Exception("Invalid/null calendar day provided for creation of appointment.");
             }
 
             // Client can select time slot and client has provided time slot
             if (this.ClientCanSelectTimeSlot && appointmentTimeSlot.AppointmentStart != null)
             {
-                // Check if appointment is within working hours
-                this.CheckBusinessRule(new AppointmentTimeSlotInWorkHours(this._workHours, appointmentTimeSlot));
-                // Check if no overlapping schedules
-                this.CheckBusinessRule(new AppointmentTimeSlotNotOverlapping(this._workHours, this._appointments, appointmentTimeSlot));
+                // Check if new appointment has valid time slot
+                this.CheckBusinessRule(new AppointmentTimeSlotIsValid(this._appointments, this._workHours, appointmentTimeSlot));
 
                 Appointment newAppointment =
-                    Appointment.CreateAppointmentWithTimeSlot(scheduleCalendarDay, appointmentTimeSlot, contactInformation);
+                    Appointment.CreateAppointmentWithTimeSlot(appointmentTimeSlot, contactInformation);
 
                 this._appointments.Add(newAppointment);
             }
@@ -103,7 +95,7 @@ namespace Scheduling.Domain.ScheduleDays
             // Invalid appointment creation request
             else 
             {
-                throw new ArgumentException($"Placeholder exception. Cannot create appointment.");
+                throw new Exception("Placeholder exception. Cannot create appointment.");
             }
         }
         

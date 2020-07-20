@@ -9,107 +9,93 @@ namespace Scheduling.UnitTests.Domain.ScheduleDays
     public class ScheduleDayTests
     {
         [Fact]
+        // Creating reccuring schedule day
         public void create_reccuring_schedule_day_success()
-        {
-            var scheduleDay = ScheduleDay.CreateReccuringWeeklySchedule(
-                Guid.NewGuid(),
-                null,
-                Scheduling.Domain.ScheduleDays.DayOfWeek.Monday,
-                new List<WorkHours>
-                {
-                    WorkHours.Create(20, 60*9, 60*13, string.Empty),
-                    WorkHours.Create(20, 60*13, 60*17, string.Empty)
-                },
-                true);
-
+        { 
+            var scheduleDay = ValidReccuringScheduleDay(true);
             Assert.NotNull(scheduleDay);
         }
-        [Fact]
-        public void create_reccuring_staff_schedule_day_success()
-        {
-            var scheduleDay = ScheduleDay.CreateReccuringWeeklySchedule(
-                Guid.NewGuid(),
-                Guid.NewGuid(),
-                Scheduling.Domain.ScheduleDays.DayOfWeek.Monday,
-                new List<WorkHours>
-                {
-                    WorkHours.Create(20, 60*9, 60*17, string.Empty)
-                },
-                true);
 
-            Assert.NotNull(scheduleDay);
-        }
         [Fact]
+        // Creating one time schdule
         public void create_one_time_schedule_day_success()
         {
-            var scheduleDay = ScheduleDay.CreateOneTimeSchedule(
-                Guid.NewGuid(),
-                null,
-                DateTime.UtcNow.Date,
-                new List<WorkHours>
-                {
-                    WorkHours.Create(20, 60*9, 60*17, string.Empty)
-                },
-                false);
-
+            var scheduleDay = ValidOneTimeScheduleDay(true);
             Assert.NotNull(scheduleDay);
         }
-        [Fact]
-        public void create_one_time_staff_schedule_day_success()
-        {
-            var scheduleDay = ScheduleDay.CreateOneTimeSchedule(
-                Guid.NewGuid(),
-                Guid.NewGuid(),
-                DateTime.UtcNow.Date,
-                new List<WorkHours>
-                {
-                    WorkHours.Create(20, 60*9, 60*17, string.Empty)
-                },
-                false);
-
-            Assert.NotNull(scheduleDay);
-        }
-        [Fact]
-        public void create_reccuring_schedule_day_fail_with_overlapping_workhours()
-        {
-            Assert.Throws<Exception>(() => ScheduleDay.CreateReccuringWeeklySchedule(
-                Guid.NewGuid(),
-                null,
-                Scheduling.Domain.ScheduleDays.DayOfWeek.Monday,
-                new List<WorkHours>
-                {
-                    WorkHours.Create(20, 540, 1020, string.Empty),
-                    WorkHours.Create(20, 960, 1080, string.Empty)
-                },
-                true));
-        }
-
 
         [Fact]
-        public void adding_appointment_to_reccuring_schedule_day_fails_with_appointment_not_in_workhours()
-        {
-            var scheduleDay = ValidReccuringScheduleDay(true);
-            var invalidTimeSlot = new AppointmentTimeSlot(DateTime.UtcNow.Date, 12 * 60 + 20);
-            var contactInformation = new ContactInformation(string.Empty, string.Empty, string.Empty, string.Empty);
-
-            Assert.Throws<Exception>(() => scheduleDay.CreateAppointment(invalidTimeSlot, contactInformation));
-        }
-
-        [Fact]
-        public void adding_appointment_to_reccuring_schedule_day_fails_because_of_appointment_overlap()
+        // Cannot create a new appointment for the schedule day if new appointment day (datetime) does not match schedule day (datetime)
+        public void cannot_create_new_appointment_with_incorrect_day_for_schedule_day()
         {
             var scheduleDay = ValidReccuringScheduleDay(true);
 
-            var timeslot1 = new AppointmentTimeSlot(DateTime.UtcNow.Date, 11 * 60);
-            var timeslot2 = new AppointmentTimeSlot(DateTime.UtcNow.Date, 11 * 60);
-
-            var contactInformation = new ContactInformation(string.Empty, string.Empty, string.Empty, string.Empty);
-            
-            scheduleDay.CreateAppointment(timeslot1, contactInformation);
-
-            Assert.Throws<Exception>(() => scheduleDay.CreateAppointment(timeslot2, contactInformation));
+            Assert.Throws<Exception>(() =>
+                scheduleDay.CreateAppointment(new AppointmentTimeSlot(
+                    // Passing invalid date
+                    DateTime.UtcNow.AddDays(+1).Date, 60 * 9 + 20),
+                    ValidContactInformation())
+                );
         }
 
+        [Fact]
+        // Cannot create a new appointment with invalid time slot - time slot is not within workhours/invalid start time
+        public void cannot_create_new_appointment_with_invalid_time_slot()
+        {
+            var scheduleDay = ValidReccuringScheduleDay(true);
+
+            Assert.Throws<Exception>(() =>
+                scheduleDay.CreateAppointment(new AppointmentTimeSlot(
+                    DateTime.UtcNow.Date, 60 * 19),
+                    ValidContactInformation())
+                );
+
+            Assert.Throws<Exception>(() =>
+                scheduleDay.CreateAppointment(new AppointmentTimeSlot(
+                    DateTime.UtcNow.Date, 9 * 61),
+                    ValidContactInformation())
+                );
+        }
+
+        [Fact]
+        // Cannot create a new appointment if there is already appointment for the schedule day in the same time slot
+        public void cannot_create_new_appointment_because_of_existing_appointment_with_same_timeslot()
+        {
+            var scheduleDay = ValidReccuringScheduleDay(true);
+
+            scheduleDay.CreateAppointment(new AppointmentTimeSlot(
+                    DateTime.UtcNow.Date, 60 * 9 + 20),
+                    ValidContactInformation());
+
+            Assert.Throws<Exception>(() =>
+                scheduleDay.CreateAppointment(new AppointmentTimeSlot(
+                    DateTime.UtcNow.Date, 60 * 9 + 20),
+                    ValidContactInformation())
+                );
+        }
+
+        [Fact]
+        // Cannot create aa new appointment if provided timeslot is null or 
+        public void cannot_create_new_appointment_with_invalid_or_null_appointment_time_slot()
+        {
+            var scheduleDay = ValidReccuringScheduleDay(true);
+
+            Assert.Throws<Exception>(() => scheduleDay.CreateAppointment(null, ValidContactInformation()));
+        }
+
+        [Fact]
+        // cannot create anew appointment when client provides appointment time slot but time slot is not selectable for schedule day
+        public void cannot_create_new_appointment_if_time_slot_provided_but_time_slot_not_selectable()
+        {
+            var scheduleDay = ValidReccuringScheduleDay(false);
+
+            Assert.Throws<Exception>(() =>
+                scheduleDay.CreateAppointment(new AppointmentTimeSlot(
+                    // Passing invalid date
+                    DateTime.UtcNow.Date, 60 * 9 + 20),
+                    ValidContactInformation())
+                );
+        }
 
         private ScheduleDay ValidReccuringScheduleDay(bool canSelectSchedule)
         {
@@ -136,6 +122,17 @@ namespace Scheduling.UnitTests.Domain.ScheduleDays
                     WorkHours.Create(20, 60*13, 60*17, string.Empty)
                 },
                 canSelectSchedule);
+        }
+
+        private ContactInformation ValidContactInformation()
+        {
+            return new ContactInformation
+            (
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                string.Empty
+            );
         }
     }
 }

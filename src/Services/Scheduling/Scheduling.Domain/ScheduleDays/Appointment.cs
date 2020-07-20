@@ -6,14 +6,12 @@ namespace Scheduling.Domain.ScheduleDays
 {
     public class Appointment : Entity<Guid>
     {
-        public DateTime AppointmentDay { get; }
         public AppointmentTimeSlot AppointmentTimeSlot { get; private set; }
         public AppointmentStatus AppointmentStatus { get; private set; }
         public ContactInformation ContactInformation { get; private set; }
 
-        private Appointment(DateTime appointmentDay, AppointmentTimeSlot appointmentTimeSlot, ContactInformation contactInformation)
+        private Appointment(AppointmentTimeSlot appointmentTimeSlot, ContactInformation contactInformation)
         {
-            this.AppointmentDay = appointmentDay;
             this.AppointmentTimeSlot = appointmentTimeSlot;
             this.AppointmentStatus = AppointmentStatus.ClientConfirmationPending;
             this.ContactInformation = contactInformation;
@@ -23,7 +21,6 @@ namespace Scheduling.Domain.ScheduleDays
 
         private Appointment(DateTime appointmentDay, ContactInformation contactInformation)
         {
-            this.AppointmentDay = appointmentDay;
             this.AppointmentTimeSlot = new AppointmentTimeSlot(appointmentDay.Date);
             this.AppointmentStatus = AppointmentStatus.StaffConfirmationPending;
             this.ContactInformation = contactInformation;
@@ -31,9 +28,9 @@ namespace Scheduling.Domain.ScheduleDays
             this.AddDomainEvent(new AppointmentCreatedDomainEvent(this));
         }
 
-        public static Appointment CreateAppointmentWithTimeSlot(DateTime appointmentDay, AppointmentTimeSlot appointmentTimeSlot, ContactInformation contactInformation)
+        public static Appointment CreateAppointmentWithTimeSlot(AppointmentTimeSlot appointmentTimeSlot, ContactInformation contactInformation)
         {
-            return new Appointment(appointmentDay, appointmentTimeSlot, contactInformation);
+            return new Appointment(appointmentTimeSlot, contactInformation);
         }
 
         public static Appointment CreateAppointmentWithoutTimeSlot(DateTime appointmentDay, ContactInformation contactInformation)
