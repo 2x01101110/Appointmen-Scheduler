@@ -19,6 +19,8 @@ namespace Scheduling.Domain.ScheduleDays
         public IReadOnlyCollection<Appointment> Appointments => _appointments;
 
         #region Schedule day creation
+        private ScheduleDay() { }
+
         private ScheduleDay(Guid serviceId, Guid? staffId, DayOfWeek dayOfWeek, List<WorkHours> workHours, bool clientCanSelectTimeSlot) 
         {
             this.CheckBusinessRule(new WorkHoursNotOverlapping(workHours));

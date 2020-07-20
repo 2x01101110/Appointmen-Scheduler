@@ -10,6 +10,8 @@ namespace Scheduling.Domain.Staff
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
 
+        private Staff() { }
+
         private Staff(Guid staffId, string firstName, string lastName)
         {
             this.Id = staffId;

@@ -7,6 +7,8 @@ namespace Scheduling.Domain.Services
     {
         public string Name { get; private set; }
 
+        private Service() { }
+
         private Service(Guid id, string name)
         {
             this.Id = id;

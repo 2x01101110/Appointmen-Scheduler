@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Scheduling.Domain.ScheduleDays;
 using Scheduling.Domain.Services;
-using System;
+using Scheduling.Domain.Staff;
+using System.Collections.Generic;
 
 namespace Scheduling.Infrastructure.Configuration.EntityTypeConfiguration
 {
@@ -12,20 +14,73 @@ namespace Scheduling.Infrastructure.Configuration.EntityTypeConfiguration
             builder.ToTable("Schedule");
             builder.HasKey(x => x.Id);
 
-            
+            builder.HasOne<Service>()
+                .WithOne()
+                .HasForeignKey<ScheduleDay>(x => x.ServiceId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            //builder.Property(x => x.CalendarDay);
+            builder.HasOne<Staff>()
+                .WithOne()
+                .HasForeignKey<ScheduleDay>(x => x.StaffId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            //builder.Ignore(x => x.DomainEvents);
+            builder.Property(x => x.CalendarDay)
+                .HasColumnName("CalendarDay");
 
-            //builder.HasMany(x => x.Appointments)
-            //    .WithOne()
-            //    .HasForeignKey("ScheduleDayId")
-            //    .OnDelete(DeleteBehavior.Cascade);
+            builder.Property(x => x.DayOfWeek)
+                .HasColumnName("DayOfWeek");
 
-            //var navigation = builder.Metadata.FindNavigation(nameof(ScheduleDay.Appointments));
+            builder.Property(x => x.ClientCanSelectTimeSlot)
+                .HasColumnName("ClientCanSelectTimeSlot");
 
-            //navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.WorkHours)
+                .HasConversion(
+                    w => JsonConvert.SerializeObject(w),
+                    w => JsonConvert.DeserializeObject<IReadOnlyCollection<WorkHours>>(w)
+                );
+                //.Metadata.SetValueComparer(null);
+
+            builder.OwnsMany<Appointment>("Appointments", x =>
+            {
+                x.ToTable("Appointments");
+                x.WithOwner().HasForeignKey("ScheduleDayId");
+                x.Ignore(x => x.DomainEvents);
+
+                x.OwnsOne(y => y.AppointmentTimeSlot, z =>
+                {
+                    z.Property(p => p.AppointmentDay)
+                        .HasColumnName("AppointmentDay");
+                    z.Property(p => p.AppointmentStart)
+                        .HasColumnName("AppointmentStart")
+                        .IsRequired(false);
+                });
+
+                x.OwnsOne(y => y.ContactInformation, z =>
+                {
+                    z.Property(p => p.Email)
+                        .HasColumnName("Email")
+                        .IsRequired(true);
+
+                    z.Property(p => p.FirstName)
+                        .HasColumnName("FirstName")
+                        .IsRequired(true);
+
+                    z.Property(p => p.LastName)
+                        .HasColumnName("LastName")
+                        .IsRequired(true);
+
+                    z.Property(p => p.Phone)
+                        .HasColumnName("PhoneNumber")
+                        .IsRequired(true);
+                });
+
+                x.OwnsOne(y => y.AppointmentStatus, z =>
+                {
+                    z.Property(p => p.Status)
+                        .HasColumnName("Status")
+                        .IsRequired(true);
+                });
+            });
         }
     }
 }

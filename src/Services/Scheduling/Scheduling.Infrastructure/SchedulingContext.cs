@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Storage;
 using Scheduling.Domain.ScheduleDays;
 using Scheduling.Domain.Services;
+using Scheduling.Domain.Staff;
 using Scheduling.Infrastructure.Configuration.EntityTypeConfiguration;
 using System;
 using System.Data;
@@ -28,13 +29,15 @@ namespace Scheduling.Infrastructure
             this._mediator = mediator;
         }
 
+        public DbSet<Staff> Staff { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<ScheduleDay> ScheduleDays { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ScheduleDayEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new AppointmentEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new ServiceEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new StaffEntityTypeConfiguration());
 
             modelBuilder.ApplyConfiguration(new CommandRequestEntityTypeConfiguration());
         }
