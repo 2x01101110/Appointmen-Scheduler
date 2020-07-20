@@ -1,2 +1,2 @@
 # AppointmentScheduler
-Appointment Scheduler micro service system.
+Appointment Scheduler microservice system.
