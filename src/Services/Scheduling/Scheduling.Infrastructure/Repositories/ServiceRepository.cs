@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Scheduling.Infrastructure.Repositories.ServiceRepository
+namespace Scheduling.Infrastructure.Repositories
 {
     public class ServiceRepository : IServiceRepository
     {

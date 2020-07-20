@@ -106,10 +106,5 @@ namespace Scheduling.Domain.ScheduleDays
 
             this.ClientCanSelectTimeSlot = clientCanSelectTimeSlot;
         }
-
-        // DateTime AppointmentDay   
-        // int? AppointmentStart
-        // 1) always check if AppointmentStart (if not null) is in work hours
-        //      1.1) If WorkHours.AppointmentLength is not null - check if AppointmentTimeSlot.AppointmentStart !> WorkHours.WorkHoursEnd + WorkHours.AppointmentLenght
     }
 }

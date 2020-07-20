@@ -123,7 +123,6 @@ namespace Scheduling.UnitTests.Domain.ScheduleDays
                 },
                 canSelectSchedule);
         }
-
         private ContactInformation ValidContactInformation()
         {
             return new ContactInformation

@@ -12,18 +12,18 @@ namespace Scheduling.Infrastructure.Configuration.EntityTypeConfiguration
         public void Configure(EntityTypeBuilder<Appointment> builder)
         {
             builder.ToTable("Appointments");
-
             builder.HasKey(x => x.Id);
-
             builder.Ignore(x => x.DomainEvents);
 
-            builder.OwnsOne(x => x.AppointmentStatus, y =>
+            builder.OwnsOne(x => x.AppointmentTimeSlot, y =>
             {
-                y.Property(p => p.Status)
-                    .HasColumnName("Status")
-                    .IsRequired(true);
+                y.Property(p => p.AppointmentDay)
+                    .HasColumnName("AppointmentDay")
+                y.Property(p => p.AppointmentStart)
+                    .HasColumnName("AppointmentStart")
+                    .IsRequired(false);
             });
-
+            
             builder.OwnsOne(x => x.ContactInformation, y =>
             {
                 y.Property(p => p.Email)
@@ -39,17 +39,14 @@ namespace Scheduling.Infrastructure.Configuration.EntityTypeConfiguration
                     .IsRequired(true);
 
                 y.Property(p => p.Phone)
-                    .HasColumnName("Phone")
+                    .HasColumnName("PhoneNumber")
                     .IsRequired(true);
             });
-
-            builder.OwnsOne(x => x.AppointmentTimeSlot, y =>
+            
+            builder.OwnsOne(x => x.AppointmentStatus, y =>
             {
-                y.Property(p => p.AppointmentStart)
-                    .HasColumnName("AppointmentStart")
-                    .IsRequired(true);
-                y.Property(p => p.AppointmentEnd)
-                    .HasColumnName("AppointmentEnd")
+                y.Property(p => p.Status)
+                    .HasColumnName("Status")
                     .IsRequired(true);
             });
         }

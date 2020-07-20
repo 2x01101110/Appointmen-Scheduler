@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Scheduling.Domain.ScheduleDays;
+using Scheduling.Domain.Services;
 using System;
 
 namespace Scheduling.Infrastructure.Configuration.EntityTypeConfiguration
@@ -9,21 +10,22 @@ namespace Scheduling.Infrastructure.Configuration.EntityTypeConfiguration
         public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<ScheduleDay> builder)
         {
             builder.ToTable("Schedule");
-
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.CalendarDay);
+            
 
-            builder.Ignore(x => x.DomainEvents);
+            //builder.Property(x => x.CalendarDay);
 
-            builder.HasMany(x => x.Appointments)
-                .WithOne()
-                .HasForeignKey("ScheduleDayId")
-                .OnDelete(DeleteBehavior.Cascade);
+            //builder.Ignore(x => x.DomainEvents);
 
-            var navigation = builder.Metadata.FindNavigation(nameof(ScheduleDay.Appointments));
+            //builder.HasMany(x => x.Appointments)
+            //    .WithOne()
+            //    .HasForeignKey("ScheduleDayId")
+            //    .OnDelete(DeleteBehavior.Cascade);
 
-            navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
+            //var navigation = builder.Metadata.FindNavigation(nameof(ScheduleDay.Appointments));
+
+            //navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
         }
     }
 }

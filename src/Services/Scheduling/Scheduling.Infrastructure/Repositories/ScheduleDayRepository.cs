@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Scheduling.Infrastructure.Repositories.ScheduleDaysRepository
+namespace Scheduling.Infrastructure.Repositories
 {
     public class ScheduleDayRepository : IScheduleDayRepository
     {
@@ -22,7 +22,7 @@ namespace Scheduling.Infrastructure.Repositories.ScheduleDaysRepository
             this._context.ScheduleDays.Add(scheduleDay);
         }
 
-        public async Task<ScheduleDay> FindByDayAsync(DateTime day)
+        public async Task<ScheduleDay> FindScheduleDayByDayAsync(DateTime day)
         {
             var dayOfWeek = (int)day.Date.DayOfWeek;
 
@@ -34,7 +34,7 @@ namespace Scheduling.Infrastructure.Repositories.ScheduleDaysRepository
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<ScheduleDay> FindByIdAsync(Guid id)
+        public async Task<ScheduleDay> FindScheduleDayByIdAsync(Guid id)
         {
             return await _context
                 .ScheduleDays
@@ -42,7 +42,7 @@ namespace Scheduling.Infrastructure.Repositories.ScheduleDaysRepository
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public void UpdateAsync(ScheduleDay scheduleDay)
+        public void UpdateScheduleDay(ScheduleDay scheduleDay)
         {
             _context.Entry(scheduleDay).State = EntityState.Modified;
         }

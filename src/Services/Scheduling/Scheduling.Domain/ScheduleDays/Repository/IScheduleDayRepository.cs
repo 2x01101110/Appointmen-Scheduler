@@ -7,9 +7,9 @@ namespace Scheduling.Domain.ScheduleDays
     public interface IScheduleDayRepository : IRepository<ScheduleDay>
     {
         void AddScheduleDay(ScheduleDay scheduleDay);
-        void UpdateAsync(ScheduleDay scheduleDay);
+        void UpdateScheduleDay(ScheduleDay scheduleDay);
 
-        Task<ScheduleDay> FindByDayAsync(DateTime day);
-        Task<ScheduleDay> FindByIdAsync(Guid id);
+        Task<ScheduleDay> FindScheduleDayByDayAsync(DateTime day);
+        Task<ScheduleDay> FindScheduleDayByIdAsync(Guid id);
     }
 }
