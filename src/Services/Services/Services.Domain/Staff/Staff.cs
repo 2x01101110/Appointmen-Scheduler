@@ -1,16 +1,20 @@
 ﻿using BuildingBlocks.Domain;
 using Services.Domain.Staff.Events;
 using System;
+using System.Collections.Generic;
 
 namespace Services.Domain.Staff
 {
     public class Staff : Entity<Guid>, IAggregateRoot
     {
+        private readonly List<Guid> _services;
+
         public Guid OrganizationId { get; }
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
         public string Email { get; private set; }
         public string Phone { get; private set; }
+        public IReadOnlyCollection<Guid> Services => _services;
 
         private Staff(Guid origanizationId, string firstName, string lastName, string email, string phone)
         {
@@ -20,6 +24,7 @@ namespace Services.Domain.Staff
             this.LastName = lastName;
             this.Email = email;
             this.Phone = phone;
+            this._services = _services ?? new List<Guid>();
 
             this.AddDomainEvent(new StaffMemberCreatedDomainEvent(this));
         }
