@@ -5,10 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\ChangeAppointmentStatus\" />
-    <Folder Include="Commands\RescheduleAppointment\" />
+    <Compile Remove="Commands\ChangeAppointmentStatus\**" />
+    <Compile Remove="Commands\RescheduleAppointment\**" />
+    <EmbeddedResource Remove="Commands\ChangeAppointmentStatus\**" />
+    <EmbeddedResource Remove="Commands\RescheduleAppointment\**" />
+    <None Remove="Commands\ChangeAppointmentStatus\**" />
+    <None Remove="Commands\RescheduleAppointment\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="IntegrationEvents\" />
-    <Folder Include="Queries\" />
+    <Folder Include="Queries\NewFolder\" />
   </ItemGroup>
 
   <ItemGroup>

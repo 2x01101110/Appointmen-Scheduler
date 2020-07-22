@@ -1,40 +1,42 @@
-﻿using Autofac;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Autofac;
 using BuildingBlocks.Infrastructure;
 using BuildingBlocks.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Scheduling.Infrastructure.Configuration.Data
+namespace Services.Infrastructure.Configuration.Data
 {
-    public class DataAccessModule : Module
+    public class DataAccessModule : Autofac.Module
     {
-        private readonly string connectionString;
+        private readonly string _connectionString;
 
         public DataAccessModule(string connectionString)
         {
-            this.connectionString = connectionString;
+            this._connectionString = connectionString;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder
-                .RegisterType<SqlConnectionFactory>()
+            builder.RegisterType<SqlConnectionFactory>()
                 .As<ISqlConnectionFactory>()
-                .WithParameter("connectionString", connectionString)
+                .WithParameter("connection", this._connectionString)
                 .InstancePerLifetimeScope();
 
             builder
                 .Register(c =>
                 {
-                    var dbContextOptionsBuilder = new DbContextOptionsBuilder<SchedulingContext>();
-                    dbContextOptionsBuilder.UseSqlServer(connectionString);
+                    var dbContextOptionsBuilder = new DbContextOptionsBuilder<ServiceContext>();
+                    dbContextOptionsBuilder.UseSqlServer(this._connectionString);
 
-                    return new SchedulingContext(dbContextOptionsBuilder.Options);
+                    return new ServiceContext(dbContextOptionsBuilder.Options);
                 })
                 .AsSelf()
                 .As<DbContext>()
                 .InstancePerLifetimeScope();
 
-            var infrastructureAssembly = typeof(SchedulingContext).Assembly;
+            var infrastructureAssembly = typeof(ServiceContext).Assembly;
 
             builder.RegisterAssemblyTypes(infrastructureAssembly)
                 .Where(type => type.Name.EndsWith("Repository"))
