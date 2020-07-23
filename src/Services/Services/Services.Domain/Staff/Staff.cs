@@ -13,6 +13,8 @@ namespace Services.Domain.Staff
         public string Email { get; private set; }
         public string Phone { get; private set; }
 
+        private Staff() { }
+
         private Staff(Guid origanizationId, string firstName, string lastName, string email, string phone)
         {
             this.Id = Guid.NewGuid();

@@ -10,7 +10,9 @@ namespace Services.Domain.Organization
     {
         public string Name { get; set; }
 
-        public Organization(string name)
+        private Organization() { }
+
+        private Organization(string name)
         {
             this.Id = Guid.NewGuid();
             this.Name = name;

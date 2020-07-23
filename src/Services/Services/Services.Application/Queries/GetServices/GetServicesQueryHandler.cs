@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Infrastructure.Data;
+using Dapper;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -17,9 +18,15 @@ namespace Services.Application.Queries.GetServices
             this._sqlConnectionFactory = sqlConnectionFactory;
         }
 
-        public Task<List<ServiceDto>> Handle(GetServicesQuery request, CancellationToken cancellationToken)
+        public async Task<List<ServiceDto>> Handle(GetServicesQuery request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var connection = _sqlConnectionFactory.GetOpenConnection();
+
+            var sql = "SELECT [Services].[Id], [Services].[Name] FROM [Services]";
+
+            var services = await connection.QueryAsync<ServiceDto>(sql);
+
+            return services.AsList();
         }
     }
 }

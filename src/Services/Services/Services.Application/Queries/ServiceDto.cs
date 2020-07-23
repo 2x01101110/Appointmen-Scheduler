@@ -6,5 +6,7 @@ namespace Services.Application.Queries
 {
     public class ServiceDto
     {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
     }
 }

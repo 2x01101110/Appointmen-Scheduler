@@ -107,7 +107,7 @@ namespace Scheduling.Infrastructure
         }
     }
 
-    public class OrderingContextDesignFactory : IDesignTimeDbContextFactory<SchedulingContext>
+    public class SchedulingContextDesignFactory : IDesignTimeDbContextFactory<SchedulingContext>
     {
         public SchedulingContext CreateDbContext(string[] args)
         {

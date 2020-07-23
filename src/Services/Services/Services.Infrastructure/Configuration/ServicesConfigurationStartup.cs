@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using Scheduling.Infrastructure.Configuration.Data;
-using Scheduling.Infrastructure.Configuration.Mediator;
+using Services.Infrastructure.Configuration.Data;
+using Services.Infrastructure.Configuration.Mediator;
 
 namespace Services.Infrastructure.Configuration
 {

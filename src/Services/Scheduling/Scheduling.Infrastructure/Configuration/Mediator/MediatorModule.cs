@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Core;
 using Autofac.Features.Variance;
+using BuildingBlocks.Infrastructure;
 using MediatR;
 using Scheduling.Infrastructure.Idempotency;
 using System;

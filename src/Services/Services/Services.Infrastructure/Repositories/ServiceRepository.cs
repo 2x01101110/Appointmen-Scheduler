@@ -20,7 +20,7 @@ namespace Services.Infrastructure.Repositories
 
         public void AddService(Service service)
         {
-            throw new NotImplementedException();
+            this._context.Services.Add(service);
         }
 
         public Task<Service> GetServiceAsync(Guid id)

@@ -11,7 +11,11 @@ namespace Services.Infrastructure.Configuration.Data.EntityTypeConfiguration
     {
         public void Configure(EntityTypeBuilder<Organization> builder)
         {
-            throw new NotImplementedException();
+            builder.ToTable("Organization");
+            builder.HasKey(x => x.Id);
+
+            builder.Property(p => p.Name)
+                .HasColumnName("Name");
         }
     }
 }

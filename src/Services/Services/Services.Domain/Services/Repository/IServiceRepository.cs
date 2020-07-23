@@ -1,11 +1,12 @@
-﻿using System;
+﻿using BuildingBlocks.Domain;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Services.Domain.Services.Repository
 {
-    public interface IServiceRepository
+    public interface IServiceRepository : IRepository<Service>
     {
         Task<Service> GetServiceAsync(Guid id);
         void AddService(Service service);

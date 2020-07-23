@@ -21,7 +21,7 @@ namespace Services.Infrastructure.Configuration.Data
         {
             builder.RegisterType<SqlConnectionFactory>()
                 .As<ISqlConnectionFactory>()
-                .WithParameter("connection", this._connectionString)
+                .WithParameter("connectionString", this._connectionString)
                 .InstancePerLifetimeScope();
 
             builder
