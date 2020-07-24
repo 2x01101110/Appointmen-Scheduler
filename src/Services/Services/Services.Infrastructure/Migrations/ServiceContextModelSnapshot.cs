@@ -122,6 +122,36 @@ namespace Services.Infrastructure.Migrations
                         .HasForeignKey("Services.Domain.Services.Service", "OrganizationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.OwnsMany("Services.Domain.Services.ServiceStaff", "Staff", b1 =>
+                        {
+                            b1.Property<Guid>("ServiceId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<Guid>("StaffId")
+                                .HasColumnName("StaffId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("ServiceId", "Id");
+
+                            b1.HasIndex("StaffId")
+                                .IsUnique();
+
+                            b1.ToTable("ServiceStaff");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ServiceId");
+
+                            b1.HasOne("Services.Domain.Staff.Staff", null)
+                                .WithOne()
+                                .HasForeignKey("Services.Domain.Services.ServiceStaff", "StaffId")
+                                .OnDelete(DeleteBehavior.NoAction)
+                                .IsRequired();
+                        });
                 });
 
             modelBuilder.Entity("Services.Domain.Staff.Staff", b =>

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Services.Application.Commands.AssignStaffToService;
 using Services.Application.Commands.CreateService;
 using Services.Application.Queries.GetService;
 using Services.Application.Queries.GetServices;
@@ -32,8 +30,7 @@ namespace Services.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetServices([FromRoute]Guid id)
         {
-            var command = new GetServiceQuery() { Id = id };
-            var services = await this._mediator.Send(command);
+            var services = await this._mediator.Send(new GetServiceQuery(id));
             return Ok(services);
         }
 
@@ -41,6 +38,13 @@ namespace Services.API.Controllers
         public async Task<IActionResult> CreateService([FromBody]CreateServiceCommand createServiceCommand)
         {
             await this._mediator.Send(createServiceCommand);
+            return NoContent();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignStaffToService([FromBody] AssignStaffToServiceCommand assignStaffToServiceCommand)
+        {
+            await this._mediator.Send(assignStaffToServiceCommand);
             return NoContent();
         }
     }

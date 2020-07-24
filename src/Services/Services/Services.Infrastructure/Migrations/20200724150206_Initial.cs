@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Services.Infrastructure.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -75,10 +75,40 @@ namespace Services.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ServiceStaff",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ServiceId = table.Column<Guid>(nullable: false),
+                    StaffId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ServiceStaff", x => new { x.ServiceId, x.Id });
+                    table.ForeignKey(
+                        name: "FK_ServiceStaff_Services_ServiceId",
+                        column: x => x.ServiceId,
+                        principalTable: "Services",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ServiceStaff_Staff_StaffId",
+                        column: x => x.StaffId,
+                        principalTable: "Staff",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Services_OrganizationId",
                 table: "Services",
                 column: "OrganizationId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServiceStaff_StaffId",
+                table: "ServiceStaff",
+                column: "StaffId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -92,6 +122,9 @@ namespace Services.Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "CommandRequests");
+
+            migrationBuilder.DropTable(
+                name: "ServiceStaff");
 
             migrationBuilder.DropTable(
                 name: "Services");

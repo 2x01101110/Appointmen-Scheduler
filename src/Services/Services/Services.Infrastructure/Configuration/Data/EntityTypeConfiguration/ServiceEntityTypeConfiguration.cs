@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Services.Domain.Organization;
 using Services.Domain.Services;
+using Services.Domain.Staff;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -28,6 +29,19 @@ namespace Services.Infrastructure.Configuration.Data.EntityTypeConfiguration
 
             builder.Property(x => x.Available)
                 .HasColumnName("Available");
+
+            builder.OwnsMany<ServiceStaff>("Staff", x =>
+            {
+                x.ToTable("ServiceStaff");
+                x.WithOwner().HasForeignKey("ServiceId");
+
+                x.Property(x => x.StaffId).HasColumnName("StaffId");
+
+                x.HasOne<Staff>()
+                    .WithOne()
+                    .HasForeignKey<ServiceStaff>(x => x.StaffId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
         }
     }
 }
